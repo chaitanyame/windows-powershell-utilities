@@ -1,6 +1,5 @@
 # hourlyreminder
 
-this is read me file for hourlyreminder from windows machine.
-
+its a powershell based hourly reminder app
 
 
