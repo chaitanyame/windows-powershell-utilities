@@ -1,7 +1,4 @@
 ﻿Add-Type -AssemblyName System.speech
-$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
-
-
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -Name ConsoleUtils -Namespace WPIA -MemberDefinition @'
@@ -16,6 +13,8 @@ Add-Type -Name ConsoleUtils -Namespace WPIA -MemberDefinition @'
 $hWnd = [WPIA.ConsoleUtils]::GetConsoleWindow()
 [WPIA.ConsoleUtils]::ShowWindow($hWnd, 0)
 
+
+$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
 
 $speak.SelectVoice('Microsoft Zira Desktop')
 
@@ -34,12 +33,11 @@ while ($currHour -in 10..20)
 {
 
 
-
-
     if ($dict[$currHour] -eq 1)
     {
 
     Start-Sleep 10
+    $currHour=(get-date).Hour
     continue
 
     }
@@ -75,6 +73,8 @@ while ($currHour -in 10..20)
 
 
 }
+
+
  
 
 
