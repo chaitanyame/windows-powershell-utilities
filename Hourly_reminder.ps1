@@ -13,6 +13,7 @@ Add-Type -Name ConsoleUtils -Namespace WPIA -MemberDefinition @'
 $hWnd = [WPIA.ConsoleUtils]::GetConsoleWindow()
 [WPIA.ConsoleUtils]::ShowWindow($hWnd, 0)
 
+Import-Module -Name 'AudioDeviceCmdlets'
 
 $speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
 
@@ -20,6 +21,9 @@ $speak.SelectVoice('Microsoft Zira Desktop')
 
 $dict=@{}
 
+[int]$curDefaultAudio = [int](Get-AudioDevice -PlaybackVolume).split('%')[0]
+
+$maxVolume=100
 
 
 # Get build folder parent directory
@@ -29,7 +33,7 @@ $ScriptDir = Split-Path $scriptpath
 
 $currHour=(get-date).Hour
 
-while ($currHour -in 10..20)
+while ($currHour -in 10..22)
 {
 
 
@@ -43,31 +47,49 @@ while ($currHour -in 10..20)
     }
 
 
-    if ($currHour -gt 20)
+    if ($currHour -ge 22)
         {
 
-        $speak.Speak('Hello Chaitanya... Time is now 8 PM. please log off from the work')
+            $speak.Speak('Hello Chaitanya... Time is now 10 PM. please log off from the work')
 
-        exit
+            exit
 
         }
-    else {
+    else 
+    
+        {
+            if((get-date).Minute -eq 0)
+            {
 
-        $dict.Add($currHour,1)
-        $PlayWav=New-Object System.Media.SoundPlayer
+                $dict.Add($currHour,1)
+                $PlayWav=New-Object System.Media.SoundPlayer
 
-        $filepath=$ScriptDir+'\mixkit-bell-notification-933.wav'
+                #Sets volume to 100%
+                Set-AudioDevice -PlaybackVolume $maxVolume
 
-        $PlayWav.SoundLocation=$filepath
+                $filepath=$ScriptDir+'\mixkit-bell-notification-933.wav'
 
-        $PlayWav.playsync()
+                $PlayWav.SoundLocation=$filepath
 
-        Start-Sleep 10
+                $PlayWav.playsync()
 
-        $currHour=(get-date).Hour
+                Start-Sleep 2
 
-        continue
+                $currHour=(get-date).Hour
 
+                #Sets volume to 100%
+                Set-AudioDevice -PlaybackVolume $curDefaultAudio
+
+                continue
+
+            }
+
+            else
+            {
+
+                continue
+
+            }
         }
 
 
